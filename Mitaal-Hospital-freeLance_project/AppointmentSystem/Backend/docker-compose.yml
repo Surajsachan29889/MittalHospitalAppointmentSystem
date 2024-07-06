@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  client:
+    container_name: mittal-hospital-appointment-node-backend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      HOST: 0.0.0.0
+    ports:
+      - "80:5000"
