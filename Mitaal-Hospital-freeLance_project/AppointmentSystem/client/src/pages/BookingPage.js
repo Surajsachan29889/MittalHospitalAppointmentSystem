@@ -32,11 +32,9 @@ const BookingPage = () => {
       if (res.data.success) {
         setDoctors(res.data.data);
         const slots = timeSlot({
-          isCurrent: true,
           starting_time: res.data.data.timings[0],
           ending_time: res.data.data.timings[1],
           duration: 15,
-          next: true,
         });
         setTime(slots);
       }
