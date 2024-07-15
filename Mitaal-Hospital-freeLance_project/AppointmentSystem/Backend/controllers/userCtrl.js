@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const doctorModel = require("../models/doctorModel");
 const appointmentModel = require("../models/appointmentModel");
 const moment = require("moment");
+const axios = require("axios");
 //register callback
 const registerController = async (req, res) => {
   try {
@@ -26,6 +27,99 @@ const registerController = async (req, res) => {
       success: false,
       message: `Register Controller ${error.message}`,
     });
+  }
+};
+const sendemail = async (req, res) => {
+  const { name, phone, address, date, time,doctorEmail } = req.body;
+  console.log(req.body);
+  const APIKEY = process.env.RESEND_API_KEY;
+  const senderEmail = 'srjsachan@gmail.com';
+  try {
+    const response = await axios.post('https://api.resend.com/emails', {
+      from: "MITTAL HOSPITAL <onboarding@resend.dev>",
+      to: doctorEmail,
+      subject: "NEW APPOINTMENT FOR YOU",
+      reply_to: senderEmail,
+      html:`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment for You</title>
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Appointment For You</h1>
+        </div>
+        <div class="content">
+            <p>Appointment from <strong>${name}</strong>,</p>
+            <p><strong>Appointment Details:</strong></p>
+            <ul>
+                <li><strong>Date:</strong>${date}</li>
+                <li><strong>Time:</strong>${time}</li>
+                <li><strong>Phone:</strong>${phone}</li>
+                <li><strong>Address of patient:</strong>${address}</li>
+            </ul>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 Mittal Hospital. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+`,
+      react: {
+        name: name,
+        phone: phone,
+        address: address,
+        date: date,
+        time: time,
+      },
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${APIKEY}`
+      }
+    });
+
+    res.status(200).send(response.data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error: error.message });
   }
 };
 
@@ -273,4 +367,5 @@ module.exports = {
   bookeAppointmnetController,
   bookingAvailabilityController,
   userAppointmentsController,
+  sendemail
 };

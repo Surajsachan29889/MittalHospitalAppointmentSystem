@@ -7,6 +7,7 @@ import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { showLoading, hideLoading } from "../redux/features/alertSlice";
 import { timeSlot } from "date-time-slots";
+import sendEmail from "../service/sendEmail";
 
 const BookingPage = () => {
   const { user } = useSelector((state) => state.user);
@@ -67,6 +68,14 @@ const BookingPage = () => {
       dispatch(hideLoading());
       if (res.data.success) {
         message.success(res.data.message);
+        const { data, error } = await sendEmail(name,phone,address,date,timeslot,doctors.email);
+
+          if (error) {
+            message.error(error);
+            return;
+          }
+
+          message.success("Email sent successfully!");
       }
     } catch (error) {
       dispatch(hideLoading());
@@ -95,12 +104,13 @@ const BookingPage = () => {
             </h4>
             <div className="w-50">
               <div className="container w-[250%] flex">
-                <form action="#" onSubmit={handleBooking}>
+                <form onSubmit={handleBooking}>
                   <div className="flex gap-[5%] justify-center items-center">
                     <DatePicker
                       aria-required="true"
                       className="m-2"
                       format="DD-MM-YYYY"
+                      name="date"
                       onChange={(value) => {
                         setDate(moment(value).format("DD-MM-YYYY"));
                       }}
@@ -109,6 +119,7 @@ const BookingPage = () => {
                       <select
                         defaultValue=""
                         onChange={(e) => setTimeslot(e.target.value)}
+                        name="time"
                       >
                         <option value="" disabled hidden>
                           Select Time Slot
@@ -128,6 +139,7 @@ const BookingPage = () => {
                       <input
                         type="text"
                         placeholder="E.g: Suraj Sachan"
+                        name="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
@@ -138,6 +150,7 @@ const BookingPage = () => {
                       <input
                         type="text"
                         placeholder="15/297 civil lines"
+                        name="address"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                         required
@@ -148,6 +161,7 @@ const BookingPage = () => {
                       <input
                         type="tel"
                         placeholder="012-345-6789"
+                        name="phone"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         required

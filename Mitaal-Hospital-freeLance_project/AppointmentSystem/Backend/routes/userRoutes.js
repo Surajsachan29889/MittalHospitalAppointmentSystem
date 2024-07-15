@@ -10,6 +10,7 @@ const {
   bookeAppointmnetController,
   bookingAvailabilityController,
   userAppointmentsController,
+  sendemail
 } = require("../controllers/userCtrl");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -28,6 +29,9 @@ router.post("/getUserData", authMiddleware, authController);
 
 //APply Doctor || POST
 router.post("/apply-doctor", applyDoctorController);
+
+
+router.post("/sendemail", sendemail);
 
 //Notifiaction  Doctor || POST
 router.post(

@@ -37,8 +37,8 @@ const HomePage = () => {
       {!user?.isDoctor?(
         <>
       <h1 className="text-center text-[3vw] font-bold"><span className="text-pri">D</span>octors</h1>
-      <Row>
-        {doctors && doctors.map((doctor) => <DoctorList doctor={doctor} />)}
+      <Row className="flex gap-10">
+        {doctors && doctors.map((doctor) => <DoctorList doctor={doctor} doctorimg={`${doctor.firstName}.png`} />)}
       </Row>
         </>
     ):(<div className="flex flex-col gap-4 justify-center items-center h-[70vh] w-full">
