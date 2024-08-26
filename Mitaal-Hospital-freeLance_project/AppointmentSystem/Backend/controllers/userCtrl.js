@@ -39,7 +39,7 @@ const sendemail = async (req, res) => {
       from: "MITTAL HOSPITAL <onboarding@resend.dev>",
       to: doctorEmail,
       subject: "NEW APPOINTMENT FOR YOU",
-      reply_to: senderEmail,
+      reply_to: doctorEmail,
       html:`<!DOCTYPE html>
 <html lang="en">
 <head>
